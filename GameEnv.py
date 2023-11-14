@@ -1,7 +1,7 @@
+import struct
 import pyMeow
 import win32api, win32con, win32gui
 from PIL import Image, ImageGrab
-import torch
 import torchvision
 import pyautogui as pg
 
@@ -27,20 +27,34 @@ def fetch_image(window_name):
     return grab_image
 
 
+def bytes2float(byte):
+    if byte == 0x0:
+        return 0.
+    temp = hex(byte)
+    ba = bytearray()
+    ba.append(int(temp[2:4], 16))
+    ba.append(int(temp[4:6], 16))
+    ba.append(int(temp[6:8], 16))
+    ba.append(int(temp[8:10], 16))
+    return struct.unpack("!f", ba)[0]
+
+
 class VSEnv:
     def __init__(self):
-        self.__last_exp = 0
-        self.__last_hp = 0
+        self.__last_exp = 0.
+        self.__last_hp = 100.
 
         self.__img2tensor = torchvision.transforms.ToTensor()
 
         self.__process = pyMeow.open_process("VampireSurvivors.exe")
         self.__module = pyMeow.get_module(self.__process, "GameAssembly.dll")
-        self.__addr_base = self.__module["base"] + 0x04291000
-        offset = [0xB8, 0x18, 0x20, 0x18, 0x38, 0x38, 0x168]
-        self.__addr_hp = pyMeow.pointer_chain(self.__process, self.__addr_base, offset)
-        offset = [0xB8, 0x18, 0x20, 0x18, 0x38, 0x38, 0x168]
-        self.__addr_exp = pyMeow.pointer_chain(self.__process, self.__addr_base, offset)
+        addr_character_controller = self.__module["base"] + 0x042BE128
+        offset = [0xC0, 0x1D8, 0x98, 0x0, 0x18, 0x28, 0x168]
+        self.__addr_hp = pyMeow.pointer_chain(self.__process, addr_character_controller, offset)
+        offset = [0xC0, 0x1D8, 0x98, 0x0, 0x18, 0x28, 0x17C]
+        self.__addr_exp = pyMeow.pointer_chain(self.__process, addr_character_controller, offset)
+        offset = [0x70, 0x58, 0x64]
+        self.__addr_coins = pyMeow.pointer_chain(self.__process, addr_character_controller, offset)
 
     def __get_screen(self, name="Vampire Survivors"):
         img = fetch_image(name)
@@ -48,24 +62,34 @@ class VSEnv:
         return ret
 
     def __get_state(self):
-        screen = self.__get_screen()
-        hp = self.read_hp()
-        exp = self.read_exp()
-        return [screen, hp, exp]
+        state = screen = self.__get_screen()
+        # hp = self.read_hp()
+        # exp = self.read_exp()
+        # state = [screen, hp, exp]
+        return state
 
     def __get_reward(self):
         # Rewards in stage 1, only calculate the difference of hp
         # get minus rewards when lose hp and positive rewards when get heal
-        reward = self.read_hp() - self.__last_hp
+        if self.__last_hp is 0.:
+            return 0
+        temp = self.read_hp()
+        reward = temp - self.__last_hp
+        self.__last_hp = temp
         return reward
 
     def read_hp(self):
-        return pyMeow.r_int(self.__process, self.__addr_hp)
+        return bytes2float(pyMeow.r_int(self.__process, self.__addr_hp))
 
     def read_exp(self):
-        return pyMeow.r_int(self.__process, self.__addr_exp)
+        return bytes2float(pyMeow.r_int(self.__process, self.__addr_exp))
+
+    def read_coins(self):
+        return bytes2float(pyMeow.r_int(self.__process, self.__addr_coins))
 
     def reset(self):
+        self.__last_exp = 0.
+        self.__last_hp = 0.
         pg.PAUSE = 1.5
         pg.press('space')
         pg.press('space')
