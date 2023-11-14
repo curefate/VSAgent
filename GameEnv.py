@@ -55,6 +55,9 @@ class VSEnv:
         self.__addr_exp = pyMeow.pointer_chain(self.__process, addr_character_controller, offset)
         offset = [0x70, 0x58, 0x64]
         self.__addr_coins = pyMeow.pointer_chain(self.__process, addr_character_controller, offset)
+        addr_timer = self.__module["base"] + 0x0429FC28
+        offset = [0xB8, 0x0, 0x10, 0x28, 0x100, 0x28, 0x2A0]
+        self.__addr_time = pyMeow.pointer_chain(self.__process, addr_timer, offset)
 
     def __get_screen(self, name="Vampire Survivors"):
         img = fetch_image(name)
@@ -86,6 +89,9 @@ class VSEnv:
 
     def read_coins(self):
         return bytes2float(pyMeow.r_int(self.__process, self.__addr_coins))
+
+    def read_time(self):
+        return bytes2float(pyMeow.r_int(self.__process, self.__addr_time))
 
     def reset(self):
         self.__last_exp = 0.
