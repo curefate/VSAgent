@@ -74,7 +74,7 @@ class VSEnv:
     def __get_reward(self):
         # Rewards in stage 1, only calculate the difference of hp
         # get minus rewards when lose hp and positive rewards when get heal
-        if self.__last_hp is 0.:
+        if self.__last_hp == 0.:
             return 0
         temp = self.read_hp()
         reward = temp - self.__last_hp
@@ -114,39 +114,39 @@ class VSEnv:
         pg.PAUSE = .01
         pg.press('esc')
         pg.PAUSE = step_time
-        if action is 0:
+        if action == 0:
             pg.keyDown('w')
             pg.PAUSE = .01
             pg.press('w')
-        elif action is 1:
+        elif action == 1:
             pg.keyDown('w', 'd')
             pg.PAUSE = .01
             pg.press('w', 'd')
-        elif action is 2:
+        elif action == 2:
             pg.keyDown('d')
             pg.PAUSE = .01
             pg.press('d')
-        elif action is 3:
+        elif action == 3:
             pg.keyDown('s', 'd')
             pg.PAUSE = .01
             pg.press('s', 'd')
-        elif action is 4:
+        elif action == 4:
             pg.keyDown('s')
             pg.PAUSE = .01
             pg.press('s')
-        elif action is 5:
+        elif action == 5:
             pg.keyDown('s', 'a')
             pg.PAUSE = .01
             pg.press('s', 'a')
-        elif action is 6:
+        elif action == 6:
             pg.keyDown('a')
             pg.PAUSE = .01
             pg.press('a')
-        elif action is 7:
+        elif action == 7:
             pg.keyDown('a', 'w')
             pg.PAUSE = .01
             pg.press('a', 'w')
-        elif action is 8:
+        elif action == 8:
             pg.PAUSE = .01
             pg.press('space')
         state = self.__get_state()
