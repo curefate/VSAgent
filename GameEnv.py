@@ -97,6 +97,9 @@ class VSEnv:
         self.__last_exp = 0.
         self.__last_hp = 0.
         pg.PAUSE = 1.5
+        pg.press('esc')
+        pg.press('esc')
+        pg.press('esc')
         pg.press('space')
         pg.press('space')
         pg.press('space')
@@ -105,11 +108,7 @@ class VSEnv:
         state = self.__get_state()
         pg.PAUSE = .01
         pg.press('esc')
-        reward = self.__get_reward()
-        done = False
-        if self.read_hp() <= 0:
-            done = True
-        return state, reward, done
+        return state
 
     def step(self, action, step_time):
         pg.PAUSE = .01
