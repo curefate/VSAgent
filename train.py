@@ -66,10 +66,10 @@ if __name__ == '__main__':
         "--path", type=str, default='', help="path of model"
     )
     parser.add_argument(
-        "--save_path", type=str, default='CartPole-v1/checkpoint', help="path to save"
+        "--save_path", type=str, default='checkpoint', help="path to save"
     )
     parser.add_argument(
-        "--logs_path", type=str, default='CartPole-v1/logs', help="path to logs"
+        "--logs_path", type=str, default='logs', help="path to logs"
     )
     parser.add_argument(
         "--end_iter", type=int, default=3001, help="end_iter"
