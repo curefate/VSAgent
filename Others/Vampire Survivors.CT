@@ -1,0 +1,1153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>52</ID>
+      <Description>"Compact View Mode"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+--Make parts of the main form invisible.
+controlMainForm = getMainForm()
+control_setVisible(wincontrol_getControl(controlMainForm,0), false)
+control_setVisible(wincontrol_getControl(controlMainForm,2), false)
+control_setVisible(wincontrol_getControl(controlMainForm,3), false)
+
+[DISABLE]
+{$lua}
+--Make parts of the main form visible.
+controlMainForm = getMainForm()
+control_setVisible(wincontrol_getControl(controlMainForm,0), true)
+control_setVisible(wincontrol_getControl(controlMainForm,2), true)
+control_setVisible(wincontrol_getControl(controlMainForm,3), true)
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>68</ID>
+      <Description>"-----"</Description>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Find CharacterController Stats"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>///Current health is a float and the game reads it in the pause menu too.
+
+[ENABLE]
+
+aobscanmodule(readhealth,GameAssembly.dll,F3 0F 10 BB 68 01 00 00 48 85 C0 74 76) // should be unique
+alloc(newmem,$1000,readhealth)
+
+label(code)
+label(return)
+
+globalalloc(_charactercontroller,8)
+
+newmem:
+
+code:
+  push rax //Push a register to the stack to free it for use.
+  mov rax,_charactercontroller //Copy our allocated address into it.
+  mov [rax],rbx //Copy our desired value into where the register is pointing.
+  pop rax //Restore the value of the register and pretend nothing happened.
+  movss xmm7,[rbx+00000168]
+  jmp return
+
+readhealth:
+  jmp newmem
+  nop 3
+return:
+registersymbol(readhealth)
+
+[DISABLE]
+
+readhealth:
+  db F3 0F 10 BB 68 01 00 00
+
+unregistersymbol(readhealth)
+unregistersymbol(_charactercontroller)
+dealloc(newmem)
+dealloc(_charactercontroller)
+
+{
+// ORIGINAL CODE - INJECTION POINT: 7FFA9BA4E8C3
+
+7FFA9BA4E8A3: 84 C0                    - test al,al
+7FFA9BA4E8A5: 75 15                    - jne 7FFA9BA4E8BC
+7FFA9BA4E8A7: 0F 2E 35 2E 17 DE 00     - ucomiss xmm6,[7FFA9C82FFDC]
+7FFA9BA4E8AE: 7A 02                    - jp 7FFA9BA4E8B2
+7FFA9BA4E8B0: 74 0A                    - je 7FFA9BA4E8BC
+7FFA9BA4E8B2: 0F 57 FF                 - xorps xmm7,xmm7
+7FFA9BA4E8B5: 0F 2E F7                 - ucomiss xmm6,xmm7
+7FFA9BA4E8B8: 7A 02                    - jp 7FFA9BA4E8BC
+7FFA9BA4E8BA: 74 63                    - je 7FFA9BA4E91F
+7FFA9BA4E8BC: 48 8B 83 58 01 00 00     - mov rax,[rbx+00000158]
+// ---------- INJECTING HERE ----------
+7FFA9BA4E8C3: F3 0F 10 BB 68 01 00 00  - movss xmm7,[rbx+00000168]
+// ---------- DONE INJECTING  ----------
+7FFA9BA4E8CB: 48 85 C0                 - test rax,rax
+7FFA9BA4E8CE: 74 76                    - je 7FFA9BA4E946
+7FFA9BA4E8D0: 48 8B 80 80 00 00 00     - mov rax,[rax+00000080]
+7FFA9BA4E8D7: 48 85 C0                 - test rax,rax
+7FFA9BA4E8DA: 74 6A                    - je 7FFA9BA4E946
+7FFA9BA4E8DC: F3 0F 10 70 14           - movss xmm6,[rax+14]
+7FFA9BA4E8E1: F3 0F 58 70 10           - addss xmm6,[rax+10]
+7FFA9BA4E8E6: 0F 28 C6                 - movaps xmm0,xmm6
+7FFA9BA4E8E9: E8 72 9F B5 FE           - call 7FFA9A5A8860
+7FFA9BA4E8EE: 84 C0                    - test al,al
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>11</ID>
+          <Description>"Base Address"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <Color>C0C0C0</Color>
+          <VariableType>Binary</VariableType>
+          <BitStart>0</BitStart>
+          <BitLength>1</BitLength>
+          <ShowAsBinary>0</ShowAsBinary>
+          <Address>[_charactercontroller]</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>114</ID>
+          <Description>"_playerStats"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <Color>C0C0C0</Color>
+          <VariableType>Binary</VariableType>
+          <BitStart>0</BitStart>
+          <BitLength>1</BitLength>
+          <ShowAsBinary>0</ShowAsBinary>
+          <Address>[_charactercontroller]+158</Address>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>129</ID>
+              <Description>"Max Health"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>80</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>143</ID>
+                  <Description>"Max Health (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>80</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>126</ID>
+              <Description>"Recovery"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>000080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>68</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>144</ID>
+                  <Description>"Recovery (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>000080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>68</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>124</ID>
+              <Description>"Armor"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>142</ID>
+                  <Description>"Armor (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>58</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>118</ID>
+              <Description>"Move Speed"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>28</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>145</ID>
+                  <Description>"Move Speed (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>28</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>138</ID>
+              <Description>"-----"</Description>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>115</ID>
+              <Description>"Might (Power)"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>008000</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>10</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>146</ID>
+                  <Description>"Might (Power) (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>008000</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>10</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>117</ID>
+              <Description>"Speed"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>004080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>20</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>147</ID>
+                  <Description>"Speed (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>004080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>20</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>121</ID>
+              <Description>"Duration"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>008080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>40</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>148</ID>
+                  <Description>"Duration (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>008080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>40</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>116</ID>
+              <Description>"Area"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>004080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>18</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>149</ID>
+                  <Description>"Area (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>004080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>18</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>139</ID>
+              <Description>"-----"</Description>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>122</ID>
+              <Description>"Cooldown (1+value=)"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>000080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>48</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>150</ID>
+                  <Description>"Cooldown (1+value=) (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>000080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>48</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>123</ID>
+              <Description>"Amount"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>800000</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>50</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>151</ID>
+                  <Description>"Amount (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>800000</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>50</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>133</ID>
+              <Description>"Revival"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>004080</Color>
+              <VariableType>Double</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>A0</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>152</ID>
+                  <Description>"Revival (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>004080</Color>
+                  <VariableType>Double</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>A0</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>134</ID>
+              <Description>"Magnet"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>88</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>196</ID>
+                  <Description>"Magnet (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>88</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>203</ID>
+              <Description>"_magnet (Test)"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>204</ID>
+                  <Description>"body"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>C0C0C0</Color>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>20</Offset>
+                  </Offsets>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>206</ID>
+                      <Description>"_transform"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <Color>C0C0C0</Color>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>0</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>[_charactercontroller]+188</Address>
+                      <Offsets>
+                        <Offset>28</Offset>
+                        <Offset>20</Offset>
+                      </Offsets>
+                      <CheatEntries>
+                        <CheatEntry>
+                          <ID>210</ID>
+                          <Description>"scale (1)"</Description>
+                          <ShowAsSigned>0</ShowAsSigned>
+                          <VariableType>Float</VariableType>
+                          <Address>[_charactercontroller]+188</Address>
+                          <Offsets>
+                            <Offset>48</Offset>
+                            <Offset>28</Offset>
+                            <Offset>20</Offset>
+                          </Offsets>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>211</ID>
+                          <Description>"scale (2)"</Description>
+                          <ShowAsSigned>0</ShowAsSigned>
+                          <VariableType>Float</VariableType>
+                          <Address>[_charactercontroller]+188</Address>
+                          <Offsets>
+                            <Offset>4C</Offset>
+                            <Offset>28</Offset>
+                            <Offset>20</Offset>
+                          </Offsets>
+                        </CheatEntry>
+                        <CheatEntry>
+                          <ID>212</ID>
+                          <Description>"_scalez"</Description>
+                          <ShowAsSigned>0</ShowAsSigned>
+                          <VariableType>Float</VariableType>
+                          <Address>[_charactercontroller]+188</Address>
+                          <Offsets>
+                            <Offset>60</Offset>
+                            <Offset>28</Offset>
+                            <Offset>20</Offset>
+                          </Offsets>
+                        </CheatEntry>
+                      </CheatEntries>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>209</ID>
+                      <Description>"_radius"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>[_charactercontroller]+188</Address>
+                      <Offsets>
+                        <Offset>44</Offset>
+                        <Offset>20</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>207</ID>
+                      <Description>"_size (1)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>[_charactercontroller]+188</Address>
+                      <Offsets>
+                        <Offset>58</Offset>
+                        <Offset>20</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>208</ID>
+                      <Description>"_size (2)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Float</VariableType>
+                      <Address>[_charactercontroller]+188</Address>
+                      <Offsets>
+                        <Offset>5C</Offset>
+                        <Offset>20</Offset>
+                      </Offsets>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>213</ID>
+                  <Description>"Visible"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>30</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>202</ID>
+                  <Description>"Radius -&gt;_val"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>10</Offset>
+                    <Offset>68</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>198</ID>
+                  <Description>"Radius -&gt;_eggval"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>68</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>200</ID>
+                  <Description>"&lt;Percentage&gt; -&gt; _val"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>10</Offset>
+                    <Offset>70</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>201</ID>
+                  <Description>"&lt;Percentage&gt; -&gt; _eggval"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+188</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>70</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>140</ID>
+              <Description>"-----"</Description>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>120</ID>
+              <Description>"Luck"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>008000</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>38</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>153</ID>
+                  <Description>"Luck (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>008000</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>38</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>119</ID>
+              <Description>"Growth"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>008080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>30</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>154</ID>
+                  <Description>"Growth (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>008080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>30</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>125</ID>
+              <Description>"Greed"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>60</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>155</ID>
+                  <Description>"Greed (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>60</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>131</ID>
+              <Description>"Curse"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <Color>800080</Color>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>90</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>156</ID>
+                  <Description>"Curse (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <Color>800080</Color>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>90</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>141</ID>
+              <Description>"-----"</Description>
+              <GroupHeader>1</GroupHeader>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>127</ID>
+              <Description>"Reroll"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>70</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>157</ID>
+                  <Description>"Reroll (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>70</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>128</ID>
+              <Description>"Skip"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>78</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>158</ID>
+                  <Description>"Skip (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>78</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>132</ID>
+              <Description>"Banish"</Description>
+              <Options moManualExpandCollapse="1"/>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+158</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>98</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>159</ID>
+                  <Description>"Banish (Egg)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>[_charactercontroller]+158</Address>
+                  <Offsets>
+                    <Offset>14</Offset>
+                    <Offset>98</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>107</ID>
+          <Description>"Invincibility (Seconds)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>[_charactercontroller]+10C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>111</ID>
+          <Description>"HP"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>[_charactercontroller]+168</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>113</ID>
+          <Description>"Level"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>[_charactercontroller]+16C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>4</ID>
+          <Description>"EXP"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>[_charactercontroller]+17C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>161</ID>
+          <Description>"_playeroptions-&gt;_config"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <Color>C0C0C0</Color>
+          <VariableType>Binary</VariableType>
+          <BitStart>0</BitStart>
+          <BitLength>1</BitLength>
+          <ShowAsBinary>0</ShowAsBinary>
+          <Address>[_charactercontroller]+70</Address>
+          <Offsets>
+            <Offset>58</Offset>
+          </Offsets>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>191</ID>
+              <Description>"playerID"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>10</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>192</ID>
+              <Description>"Max Weapons"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>54</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>175</ID>
+              <Description>"Coins"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>60</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>172</ID>
+              <Description>"RunCoins"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>64</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>184</ID>
+              <Description>"Enemies Killed"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>68</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>185</ID>
+              <Description>"LifetimeCoins"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>7C</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>186</ID>
+              <Description>"TotalCoins"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>80</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>173</ID>
+              <Description>"BeginnersLuck"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>[_charactercontroller]+70</Address>
+              <Offsets>
+                <Offset>84</Offset>
+                <Offset>58</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>174</ID>
+                  <Description>"Set to 5 for guaranteed 5-item chests."</Description>
+                  <Color>008000</Color>
+                  <GroupHeader>1</GroupHeader>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>135</ID>
+      <Description>"-----"</Description>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>65</ID>
+      <Description>"Find Timer"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>//The in-game timer is a float that matches what the game shows you.
+//So like 4:28 would be a value of 260 seconds.
+//The game rounds it to a whole number.
+
+[ENABLE]
+
+aobscanmodule(readtimer,GameAssembly.dll,F3 0F 10 B0 A0 02 00 00 48 85) // should be unique
+alloc(newmem,$1000,readtimer)
+
+label(code)
+label(return)
+
+globalalloc(_timerbase,8)
+
+newmem:
+
+code:
+  push rbx //Push a register to the stack to free it for use.
+  mov rbx,_timerbase //Copy our allocated address into it.
+  mov [rbx],rax //Copy our desired value into where rbx is pointing.
+  pop rbx //Restore the value of rbx and pretend nothing happened.
+  movss xmm6,[rax+000002A0]
+  jmp return
+
+readtimer:
+  jmp newmem
+  nop 3
+return:
+registersymbol(readtimer)
+
+[DISABLE]
+
+readtimer:
+  db F3 0F 10 B0 A0 02 00 00
+
+unregistersymbol(readtimer)
+unregistersymbol(_timerbase)
+dealloc(newmem)
+dealloc(_timerbase)
+
+{
+// ORIGINAL CODE - INJECTION POINT: 7FFA9BA3DDCC
+
+7FFA9BA3DD96: 48 89 B4 24 98 00 00 00  - mov [rsp+00000098],rsi
+7FFA9BA3DD9E: 48 8B CF                 - mov rcx,rdi
+7FFA9BA3DDA1: 0F 29 74 24 70           - movaps [rsp+70],xmm6
+7FFA9BA3DDA6: E8 25 5D 2C 00           - call VampireSurvivors.UI.BaseUIPage.Update
+7FFA9BA3DDAB: 48 8B 05 A6 8F 14 01     - mov rax,[7FFA9CB86D58]
+7FFA9BA3DDB2: 48 8B 88 B8 00 00 00     - mov rcx,[rax+000000B8]
+7FFA9BA3DDB9: 48 8B 01                 - mov rax,[rcx]
+7FFA9BA3DDBC: 48 85 C0                 - test rax,rax
+7FFA9BA3DDBF: 0F 84 95 02 00 00        - je 7FFA9BA3E05A
+7FFA9BA3DDC5: 48 8B 8F 28 01 00 00     - mov rcx,[rdi+00000128]
+// ---------- INJECTING HERE ----------
+7FFA9BA3DDCC: F3 0F 10 B0 A0 02 00 00  - movss xmm6,[rax+00000A90]
+// ---------- DONE INJECTING  ----------
+7FFA9BA3DDD4: 48 85 C9                 - test rcx,rcx
+7FFA9BA3DDD7: 0F 84 7D 02 00 00        - je 7FFA9BA3E05A
+7FFA9BA3DDDD: 45 33 C0                 - xor r8d,r8d
+7FFA9BA3DDE0: 33 D2                    - xor edx,edx
+7FFA9BA3DDE2: E8 B9 39 97 FE           - call System.Text.StringBuilder.set_Length
+7FFA9BA3DDE7: 48 8B B7 28 01 00 00     - mov rsi,[rdi+00000128]
+7FFA9BA3DDEE: 0F 28 C6                 - movaps xmm0,xmm6
+7FFA9BA3DDF1: F3 0F 5E 05 17 1B DF 00  - divss xmm0,[7FFA9C82F910]
+7FFA9BA3DDF9: E8 1A 1E 5F FD           - call 7FFA9902FC18
+7FFA9BA3DDFE: 48 8B 0D EB 8D 12 01     - mov rcx,[7FFA9CB66BF0]
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>66</ID>
+          <Description>"Seconds"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>[_timerbase]+2A0</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>67</ID>
+      <Description>"-----"</Description>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>214</ID>
+      <Description>"HPpointer"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+04291000</Address>
+      <Offsets>
+        <Offset>168</Offset>
+        <Offset>38</Offset>
+        <Offset>38</Offset>
+        <Offset>18</Offset>
+        <Offset>20</Offset>
+        <Offset>18</Offset>
+        <Offset>B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>215</ID>
+      <Description>"CCpointer1"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+042BE128</Address>
+      <Offsets>
+        <Offset>0</Offset>
+        <Offset>28</Offset>
+        <Offset>18</Offset>
+        <Offset>0</Offset>
+        <Offset>98</Offset>
+        <Offset>1D8</Offset>
+        <Offset>C0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>216</ID>
+      <Description>"CCpointer2"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+043ABB00</Address>
+      <Offsets>
+        <Offset>168</Offset>
+        <Offset>28</Offset>
+        <Offset>18</Offset>
+        <Offset>0</Offset>
+        <Offset>98</Offset>
+        <Offset>1D8</Offset>
+        <Offset>C0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>217</ID>
+      <Description>"timeP"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+0429FC28</Address>
+      <Offsets>
+        <Offset>2A0</Offset>
+        <Offset>28</Offset>
+        <Offset>100</Offset>
+        <Offset>28</Offset>
+        <Offset>10</Offset>
+        <Offset>0</Offset>
+        <Offset>B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>218</ID>
+      <Description>"timeP2"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+0427BAA8</Address>
+      <Offsets>
+        <Offset>2A0</Offset>
+        <Offset>28</Offset>
+        <Offset>100</Offset>
+        <Offset>28</Offset>
+        <Offset>10</Offset>
+        <Offset>20</Offset>
+        <Offset>B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>219</ID>
+      <Description>"timeP3"</Description>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"GameAssembly.dll"+0429FC28</Address>
+      <Offsets>
+        <Offset>2A0</Offset>
+        <Offset>28</Offset>
+        <Offset>100</Offset>
+        <Offset>38</Offset>
+        <Offset>B8</Offset>
+        <Offset>0</Offset>
+        <Offset>B8</Offset>
+      </Offsets>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>_timerbase</Name>
+      <Address>1E0364C0000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+  <DisassemblerComments>
+    <DisassemblerComment>
+      <Address>"pmain.dll"+7297F</Address>
+      <Comment>------------------1</Comment>
+    </DisassemblerComment>
+    <DisassemblerComment>
+      <Address>"pmain.dll"+72991</Address>
+      <Comment>------------------2</Comment>
+    </DisassemblerComment>
+  </DisassemblerComments>
+</CheatTable>
